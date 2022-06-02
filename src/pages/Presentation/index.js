@@ -269,13 +269,17 @@ function Presentation() {
                 <TableCell align="right" component="th">
                   <Checkbox checked={accept} onChange={onAcceptChecked} />
                 </TableCell>
-                <TableCell align="right">{dict.acceptVerbage}</TableCell>
+                <TableCell onClick={onAcceptChecked} align="right">
+                  {dict.acceptVerbage}
+                </TableCell>
               </TableRow>
               <TableRow key="reject">
                 <TableCell align="right" component="th">
                   <Checkbox checked={deny} onChange={onDenyChecked} />
                 </TableCell>
-                <TableCell align="right">{dict.denyVerbage}</TableCell>
+                <TableCell onClick={onDenyChecked} align="right">
+                  {dict.denyVerbage}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
