@@ -21,61 +21,70 @@ import Divider from "@mui/material/Divider";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import MKBox from "components/MKBox";
-// import useMediaQuery from "@mui/material/useMediaQuery";
-import MKTypography from "components/MKTypography";
-// import MKSocialButton from "components/MKSocialButton";
-import SignatureCanvas from "react-signature-canvas";
-// Material Kit 2 React examples
-// import DefaultNavbar from "examples/Navbars/DefaultNavbar";
-import DefaultFooter from "examples/Footers/DefaultFooter";
-// import FilledInfoCard from "examples/Cards/InfoCards/FilledInfoCard";
-// import { PDFViewer } from "@react-pdf/renderer";
-// // Presentation page sections
-// import Counters from "pages/Presentation/sections/Counters";
-// import Information from "pages/Presentation/sections/Information";
-// import DesignBlocks from "pages/Presentation/sections/DesignBlocks";
-// import Pages from "pages/Presentation/sections/Pages";
-// import Testimonials from "pages/Presentation/sections/Testimonials";
-// import Download from "pages/Presentation/sections/Download";
 
-// // Presentation page components
-// import BuiltByDevelopers from "pages/Presentation/components/BuiltByDevelopers";
+import MKTypography from "components/MKTypography";
+import SignatureCanvas from "react-signature-canvas";
+
+import DefaultFooter from "examples/Footers/DefaultFooter";
 
 // Routes
-// import routes from "routes";
 import footerRoutes from "footer.routes";
 
 // Images
 import bgImage from "assets/images/phoa/phoaHome.jpg";
 import {
-  // FormControlLabel,
-  // FormGroup,
   TableBody,
-  // TableContainer,
   TableHead,
   Table,
   TableRow,
   TableCell,
   Button,
-  // ButtonGroup,
   Stack,
   Snackbar,
-  // Input,
   TextField,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { useState, useCallback, createRef } from "react";
+import FormControl from "@mui/material/FormControl";
+import { useState, useCallback, createRef, useEffect } from "react";
 import PDFExport from "components/custom/PDFExport/PDFExport";
-import { PDFViewer } from "@react-pdf/renderer";
+import { /* PDFViewer, */ pdf } from "@react-pdf/renderer";
 import { dictionary } from "../../utilities/Dictionary/translation";
+// eslint-disable-next-line
+const MAILGUN_KEY = "YXBpOjA2Mzc3NDgwYTQzMjk0Njc1OTJhMDI1ZDFjNDVmMDIxLTI3YTU2MmY5LTQ3ODllYTU4";
+// eslint-disable-next-line
+const MAILGUN_URL =
+  "https://api.mailgun.net/v3/sandboxefb83a85b48c48259af8bf536e83235b.mailgun.org/messages";
+// eslint-disable-next-line
+function sendEmail(email) {
+  const params = {
+    from: email.fromName,
+    to: email.toEmail,
+    subject: email.subject,
+    html: email.message,
+    attachment: email.attachment,
+  };
+  const formData = new FormData();
+  Object.keys(params).forEach((property) => {
+    formData.append(property, params[property]);
+  });
+  const options = {
+    method: "post",
+    body: formData,
+    headers: {
+      Authorization: `Basic ${MAILGUN_KEY}`,
+    },
+  };
+  fetch(MAILGUN_URL, options);
+}
 
-// import { useTheme } from "@mui/material/styles";
 function Presentation() {
   const [{ accept, deny }, setCheckboxStates] = useState({ accept: false, deny: false });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snickerOpen, setSnickerOpen] = useState(false);
-  const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
   const [signature, setSignature] = useState();
-  const [language] = useState("sp-MEX");
+  const [language, setLanguage] = useState("en-US");
   const [model, setModel] = useState({ name: "", address: "" });
   const signatureRef = createRef();
 
@@ -85,6 +94,12 @@ function Presentation() {
   const onDenyChecked = useCallback(() => {
     setCheckboxStates({ accept: accept ? !accept : accept, deny: !deny });
   }, [accept, deny]);
+  const onLanguageChange = useCallback(
+    (e) => {
+      setLanguage(e.target.value);
+    },
+    [setLanguage]
+  );
   const submitClicked = useCallback(() => {
     setDialogOpen(true);
   }, [accept, deny]);
@@ -97,11 +112,37 @@ function Presentation() {
   }, [setSnickerOpen]);
   const signatureAccepted = useCallback(() => {
     const formSignature = signatureRef.current.toDataURL();
-
     setSignature(formSignature);
     setDialogOpen(false);
-    setPdfDialogOpen(true);
-  }, [signatureRef, setPdfDialogOpen, setSignature]);
+  }, [signatureRef, setSignature]);
+  useEffect(() => {
+    if (signature) {
+      const MyDoc = (
+        <PDFExport
+          name={model.name}
+          address={model.address}
+          signature={signature}
+          agree={accept}
+          language={language}
+        />
+      );
+      const blob = pdf(MyDoc).toBlob();
+      blob.then((blobValue) => {
+        const file = new File([blobValue], "singedCovenant.pdf", {
+          lastModified: new Date().getTime(),
+        });
+        const email = {
+          attachment: file,
+        };
+        email.toEmail = "eddyhernandez0921@live.com";
+        email.fromEmail = "eddyhernandez0921@live.com";
+        email.fromName = "PHOA AutoSystem@phoa.com";
+        email.subject = "test Email";
+        email.message = "sdfsdfasdf";
+        sendEmail(email);
+      });
+    }
+  }, [signature, model, accept, language]);
   const clearSignatureClicked = useCallback(() => {
     signatureRef.current.clear();
   }, [signatureRef]);
@@ -166,6 +207,25 @@ function Presentation() {
         }}
       >
         <Container sx={{ mt: 6 }}>
+          <Grid sx={{ textAlign: "right", marginBottom: "50px" }}>
+            <FormControl variant="standard" size="large" sx={{ m: 1, minWidth: "200px" }}>
+              <InputLabel id="demo-simple-select-standard-label">
+                <h3>{dict.selectLanguage}</h3>
+              </InputLabel>
+              <Select
+                autoWidth
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={language}
+                onChange={onLanguageChange}
+                label="Age"
+              >
+                <MenuItem value="en-US">English</MenuItem>
+                <MenuItem value="sp-MEX">Español</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Divider />
           <MKTypography
             variant="h3"
             mt={-6}
@@ -255,19 +315,6 @@ function Presentation() {
         message="Request canceled no action neeed."
         severity="info"
       />
-      <Dialog fullScreen open={pdfDialogOpen}>
-        {signature && (
-          <PDFViewer style={{ width: "100vh", height: "100vh" }}>
-            <PDFExport
-              name={model.name}
-              address={model.address}
-              signature={signature}
-              agree={accept}
-              language={language}
-            />
-          </PDFViewer>
-        )}
-      </Dialog>
     </>
   );
 }

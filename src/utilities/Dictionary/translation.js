@@ -19,6 +19,7 @@ export const dictionary = {
       name: "Name",
       address: "Address",
       signatureDescription: "Please sign below.",
+      selectLanguage: "Selecione Idioma",
     },
     pdfExport: {
       title: "Pharr PHOA Ammendments 2022",
@@ -53,6 +54,7 @@ export const dictionary = {
       name: "Nombre",
       address: "Direcion",
       signatureDescription: "Por favor firme abajo",
+      selectLanguage: "Select Language",
     },
     pdfExport: {
       title: "Pharr PHOA Enmiendas 2022",
