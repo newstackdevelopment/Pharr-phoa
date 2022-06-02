@@ -20,10 +20,13 @@ export const dictionary = {
       address: "Address",
       signatureDescription: "Please sign below.",
       selectLanguage: "Selecione Idioma",
+      comfirmationDialog: "Thank you! Your information has been send to administration.",
+      comrirmationDialogDeny: "Thank you! No further action is needed.",
+      comfirmationDialogTitle: "Form Submitted",
     },
     pdfExport: {
       title: "Pharr PHOA Ammendments 2022",
-      article: ">Article IX General Provisions",
+      article: "Article IX General Provisions",
       ammendment: "Section 9.3 Ammendment",
       oldAmmendment:
         "The Covenants and restrictions of this Declaration shall run with and bind the land for an additional term of ten (10) years from the date this amendment to the Declaration is recorded. The Declaration may be amended by a vote of 60% of the total property owners. Any amendment must be recorded in the Deed Records of Hidalgo County, Texas before such amendment shall have any force and effect.",
@@ -55,6 +58,9 @@ export const dictionary = {
       address: "Direcion",
       signatureDescription: "Por favor firme abajo",
       selectLanguage: "Select Language",
+      comfirmationDialog: "Gracias! Su imformacion a sido mandada a la amdinistracion.",
+      comrirmationDialogDeny: "¡Gracias! No se necesita ninguna otra acción.",
+      comfirmationDialogTitle: "Forma Documentada",
     },
     pdfExport: {
       title: "Pharr PHOA Enmiendas 2022",

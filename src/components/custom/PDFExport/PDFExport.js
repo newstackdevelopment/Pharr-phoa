@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
 
 export default function PDFExport({ signature, userName, address, agree, language }) {
   const dict = dictionary[language].pdfExport;
-  //   const generalDict = dictionary[language].general;
   return (
     <Document title="Article IX   General Provisions">
       <Page style={styles.body}>

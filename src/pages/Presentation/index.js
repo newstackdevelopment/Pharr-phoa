@@ -28,6 +28,8 @@ import SignatureCanvas from "react-signature-canvas";
 import DefaultFooter from "examples/Footers/DefaultFooter";
 
 // Routes
+// eslint-disable-next-line
+import { useNavigate } from "react-router-dom";
 import footerRoutes from "footer.routes";
 
 // Images
@@ -45,6 +47,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import { useState, useCallback, createRef, useEffect } from "react";
@@ -56,6 +62,7 @@ const MAILGUN_KEY = "YXBpOjA2Mzc3NDgwYTQzMjk0Njc1OTJhMDI1ZDFjNDVmMDIxLTI3YTU2MmY
 // eslint-disable-next-line
 const MAILGUN_URL =
   "https://api.mailgun.net/v3/sandboxefb83a85b48c48259af8bf536e83235b.mailgun.org/messages";
+
 // eslint-disable-next-line
 function sendEmail(email) {
   const params = {
@@ -80,8 +87,10 @@ function sendEmail(email) {
 }
 
 function Presentation() {
+  const navigate = useNavigate();
   const [{ accept, deny }, setCheckboxStates] = useState({ accept: false, deny: false });
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [comfirmationDialogOpen, setcomfirmationDialogOpen] = useState(false);
   const [snickerOpen, setSnickerOpen] = useState(false);
   const [signature, setSignature] = useState();
   const [language, setLanguage] = useState("en-US");
@@ -94,27 +103,38 @@ function Presentation() {
   const onDenyChecked = useCallback(() => {
     setCheckboxStates({ accept: accept ? !accept : accept, deny: !deny });
   }, [accept, deny]);
+
+  const submitClicked = useCallback(() => {
+    if (accept) {
+      setDialogOpen(true);
+    } else {
+      setcomfirmationDialogOpen(true);
+    }
+  }, [accept, deny, setcomfirmationDialogOpen, setDialogOpen]);
+  const clearSignatureClicked = useCallback(() => {
+    signatureRef.current.clear();
+  }, [signatureRef]);
+  const signatureCancelClicked = useCallback(() => {
+    setSnickerOpen(true);
+    setDialogOpen(false);
+  }, [setSnickerOpen]);
+
+  const handleSnickerClose = useCallback(() => {
+    setSnickerOpen(false);
+  }, [setSnickerOpen]);
   const onLanguageChange = useCallback(
     (e) => {
       setLanguage(e.target.value);
     },
     [setLanguage]
   );
-  const submitClicked = useCallback(() => {
-    setDialogOpen(true);
-  }, [accept, deny]);
-  const handleSnickerClose = useCallback(() => {
-    setSnickerOpen(false);
-  }, [setSnickerOpen]);
-  const signatureCancelClicked = useCallback(() => {
-    setSnickerOpen(true);
-    setDialogOpen(false);
-  }, [setSnickerOpen]);
+
   const signatureAccepted = useCallback(() => {
     const formSignature = signatureRef.current.toDataURL();
     setSignature(formSignature);
     setDialogOpen(false);
   }, [signatureRef, setSignature]);
+
   useEffect(() => {
     if (signature) {
       const MyDoc = (
@@ -140,12 +160,15 @@ function Presentation() {
         email.subject = "test Email";
         email.message = "sdfsdfasdf";
         sendEmail(email);
+        setcomfirmationDialogOpen(true);
       });
     }
-  }, [signature, model, accept, language]);
-  const clearSignatureClicked = useCallback(() => {
-    signatureRef.current.clear();
-  }, [signatureRef]);
+  }, [signature, model, accept, language, setcomfirmationDialogOpen]);
+
+  const handlecomfirmationDialogOk = useCallback(() => {
+    setcomfirmationDialogOpen(false);
+    navigate("//phoatx.com");
+  }, [setcomfirmationDialogOpen]);
   const onInputChange = useCallback(
     (e) => {
       setModel((existing) => ({ ...existing, [e.target.id]: e.target.value }));
@@ -156,7 +179,6 @@ function Presentation() {
   const generalDict = dictionary[language].general;
   return (
     <>
-      {/* <DefaultNavbar routes={routes} sticky /> */}
       <MKBox
         minHeight="75vh"
         width="100%"
@@ -315,6 +337,19 @@ function Presentation() {
         message="Request canceled no action neeed."
         severity="info"
       />
+      <Dialog open={comfirmationDialogOpen}>
+        <DialogTitle id="alert-dialog-title">{dict.comfirmationDialogTitle}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {accept ? dict.comfirmationDialog : dict.comrirmationDialogDeny}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlecomfirmationDialogOk} autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
