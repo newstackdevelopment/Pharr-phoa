@@ -110,6 +110,8 @@ function Presentation() {
     } else {
       setcomfirmationDialogOpen(true);
     }
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
   }, [accept, deny, setcomfirmationDialogOpen, setDialogOpen]);
   const clearSignatureClicked = useCallback(() => {
     signatureRef.current.clear();
