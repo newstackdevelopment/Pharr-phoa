@@ -141,7 +141,7 @@ function Presentation() {
     if (signature) {
       const MyDoc = (
         <PDFExport
-          name={model.name}
+          userName={model.name}
           address={model.address}
           signature={signature}
           agree={accept}
