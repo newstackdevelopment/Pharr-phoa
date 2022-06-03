@@ -25,7 +25,7 @@ export const dictionary = {
       comfirmationDialogTitle: "Form Submitted",
     },
     pdfExport: {
-      title: "Pharr PHOA Ammendments 2022",
+      title: "Pharr Plantation Home Owner Association Ammendments 2022",
       article: "Article IX General Provisions",
       ammendment: "Section 9.3 Ammendment",
       oldAmmendment:
@@ -63,7 +63,7 @@ export const dictionary = {
       comfirmationDialogTitle: "Forma Documentada",
     },
     pdfExport: {
-      title: "Pharr PHOA Enmiendas 2022",
+      title: "Pharr Plantation Home Owner Association Enmiendas 2022",
       article: "Artículo IX Disposiciones Generales",
       ammendment: "Section 9.3 Ammendment",
       oldAmmendment:

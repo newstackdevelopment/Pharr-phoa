@@ -51,11 +51,17 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  OutlinedInput,
+  // InputAdornment,
+  // IconButton,
+  Autocomplete,
+  Box,
 } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
-import { useState, useCallback, createRef, useEffect } from "react";
+import { useState, useCallback, createRef } from "react";
 import PDFExport from "components/custom/PDFExport/PDFExport";
 import { /* PDFViewer, */ pdf } from "@react-pdf/renderer";
+import debounce from "lodash/debounce";
 import { dictionary } from "../../utilities/Dictionary/translation";
 // eslint-disable-next-line
 const MAILGUN_KEY = "YXBpOjA2Mzc3NDgwYTQzMjk0Njc1OTJhMDI1ZDFjNDVmMDIxLTI3YTU2MmY5LTQ3ODllYTU4";
@@ -95,6 +101,8 @@ function Presentation() {
   const [signature, setSignature] = useState();
   const [language, setLanguage] = useState("en-US");
   const [model, setModel] = useState({ name: "", address: "" });
+  const [addresses, setAddresses] = useState([]);
+  const [addressesLoading, setAddressesLoading] = useState(false);
   const signatureRef = createRef();
 
   const onAcceptChecked = useCallback(() => {
@@ -130,41 +138,38 @@ function Presentation() {
     },
     [setLanguage]
   );
-
-  const signatureAccepted = useCallback(() => {
+  const onSignatureEnd = useCallback(() => {
     const formSignature = signatureRef.current.toDataURL();
     setSignature(formSignature);
-    setDialogOpen(false);
-  }, [signatureRef, setSignature]);
-
-  useEffect(() => {
-    if (signature) {
-      const MyDoc = (
-        <PDFExport
-          userName={model.name}
-          address={model.address}
-          signature={signature}
-          agree={accept}
-          language={language}
-        />
-      );
-      const blob = pdf(MyDoc).toBlob();
-      blob.then((blobValue) => {
-        const file = new File([blobValue], "singedCovenant.pdf", {
-          lastModified: new Date().getTime(),
-        });
-        const email = {
-          attachment: file,
-        };
-        email.toEmail = "eddyhernandez0921@live.com";
-        email.fromEmail = "eddyhernandez0921@live.com";
-        email.fromName = "PHOA AutoSystem@phoa.com";
-        email.subject = "test Email";
-        email.message = "sdfsdfasdf";
-        sendEmail(email);
-        setcomfirmationDialogOpen(true);
+  }, [setSignature, signatureRef]);
+  const signatureAccepted = useCallback(() => {
+    const MyDoc = (
+      <PDFExport
+        userName={model.name}
+        address={model.address}
+        signature={signature}
+        agree={accept}
+        language={language}
+      />
+    );
+    const blob = pdf(MyDoc).toBlob();
+    blob.then((blobValue) => {
+      const file = new File([blobValue], "singedCovenant.pdf", {
+        lastModified: new Date().getTime(),
       });
-    }
+      const email = {
+        attachment: file,
+      };
+      email.toEmail = "eddyhernandez0921@live.com";
+      email.fromEmail = "eddyhernandez0921@live.com";
+      email.fromName = "PHOA AutoSystem@phoa.com";
+      email.subject = "test Email";
+      email.message = "sdfsdfasdf";
+      sendEmail(email);
+      setcomfirmationDialogOpen(true);
+    });
+
+    setDialogOpen(false);
   }, [signature, model, accept, language, setcomfirmationDialogOpen]);
 
   const handlecomfirmationDialogOk = useCallback(() => {
@@ -172,10 +177,29 @@ function Presentation() {
     navigate("//phoatx.com");
   }, [setcomfirmationDialogOpen]);
   const onInputChange = useCallback(
-    (e) => {
-      setModel((existing) => ({ ...existing, [e.target.id]: e.target.value }));
+    (e, newValue) => {
+      setModel((existing) => ({
+        ...existing,
+        [e.target.id === "name" ? "name" : "address"]: newValue ? newValue.value : e.target.value,
+      }));
     },
     [setModel]
+  );
+  const onAddressChange = useCallback(
+    debounce((e) => {
+      if (e.target.value.length > 4) {
+        setAddressesLoading(true);
+        fetch(
+          `https://api.geoapify.com/v1/geocode/autocomplete?text=${e.target.value}&bias=proximity:-98.17976786956274,26.162174659354406|countrycode:us&format=json&apiKey=6b87ebae4bb74a6380ccf6eafe34a501`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            setAddressesLoading(false);
+            setAddresses(data.results.map((x) => ({ ...x, value: x.formatted })));
+          });
+      }
+    }, 1000),
+    [setAddresses]
   );
   const dict = dictionary[language].presentation;
   const generalDict = dictionary[language].general;
@@ -301,17 +325,53 @@ function Presentation() {
             backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
             backdropFilter: "saturate(200%) blur(30px)",
             boxShadow: ({ boxShadows: { xxl } }) => xxl,
+            alignContent: "center",
           }}
         >
           <MKTypography variant="h4" align="center">
             {dict.name}
           </MKTypography>
-          <TextField onChange={onInputChange} id="name" variant="outlined" />
+          <FormControl sx={{ m: 1, margin: 2 }} variant="outlined">
+            <OutlinedInput
+              id="name"
+              type="text"
+              value={model.name}
+              onChange={onInputChange}
+              sx={{ minWidth: 9 / 10 }}
+              label="name"
+            />
+          </FormControl>
           <Divider />
           <MKTypography variant="h4" align="center">
             {dict.address}
           </MKTypography>
-          <TextField onChange={onInputChange} id="address" variant="outlined" />
+          <FormControl sx={{ m: 1, margin: 2 }} variant="outlined">
+            <Autocomplete
+              id="address"
+              sx={{ minWidth: 9 / 10 }}
+              options={addresses}
+              loading={addressesLoading}
+              autoHighlight
+              onChange={onInputChange}
+              getOptionLabel={(option) => option.formatted}
+              renderOption={(props, option) => (
+                <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props}>
+                  {option.formatted}
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  onChange={onAddressChange}
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password", // disable autocomplete and autofill
+                  }}
+                />
+              )}
+            />
+          </FormControl>
+          {/* <TextField onChange={onInputChange} id="address" variant="outlined" /> */}
           <Divider />
           <MKTypography variant="h4" align="center">
             {dict.signatureDescription}
@@ -321,6 +381,7 @@ function Presentation() {
             penColor="black"
             canvasProps={{ width: 500, height: 200, className: "sigCanvas" }}
             ref={signatureRef}
+            onEnd={onSignatureEnd}
           />
           <Divider />
           <Stack spacing={3} direction="row" alignItems="center" justifyContent="center">
@@ -330,9 +391,11 @@ function Presentation() {
             <Button size="large" onClick={clearSignatureClicked}>
               {dict.clearSignature}
             </Button>
-            <Button size="large" onClick={signatureAccepted}>
-              {generalDict.accept}
-            </Button>
+            {model.name && model.address && signature && (
+              <Button size="large" onClick={signatureAccepted}>
+                {generalDict.accept}
+              </Button>
+            )}
           </Stack>
         </Card>
       </Dialog>
