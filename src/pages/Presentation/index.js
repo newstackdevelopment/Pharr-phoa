@@ -207,35 +207,40 @@ function Presentation() {
     <>
       <MKBox
         minHeight="75vh"
-        width="100%"
+        // width="100%"
+        maxWidth="1500px"
         sx={{
+          ml: "auto",
+          mr: "auto",
           backgroundImage: `url(${bgImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "top",
+          backgroundSize: "100% 100%",
+          backgroundPosition: "top right",
+          backgroundRepeat: "no-repeat",
           display: "grid",
-          placeItems: "center",
+          placeItems: "center center",
         }}
       >
         <Container>
-          <Grid container item xs={12} lg={7} justifyContent="center" mx="auto">
+          <Grid container item xs={12} lg={12} justifyContent="center" mx="auto">
             <MKTypography
               variant="h1"
-              color="white"
+              color="black"
               mt={-6}
               mb={1}
+              px={{ xs: 12, sm: 12, md: 6, lg: 12 }}
               sx={({ breakpoints, typography: { size } }) => ({
                 [breakpoints.down("md")]: {
-                  fontSize: size["3xl"],
+                  fontSize: size["2xl"],
                 },
               })}
             >
               {dict.header}
             </MKTypography>
             <MKTypography
-              variant="body1"
-              color="white"
+              variant="body2"
+              color="black"
               textAlign="center"
-              px={{ xs: 6, lg: 12 }}
+              px={{ xs: 12, md: 12, lg: 12 }}
               mt={1}
             >
               {dict.description}
@@ -246,9 +251,11 @@ function Presentation() {
       <Card
         sx={{
           p: 2,
-          mx: { xs: 2, lg: 3 },
           mt: -8,
           mb: 4,
+          ml: "auto",
+          mr: "auto",
+          maxWidth: "1500px",
           backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
           backdropFilter: "saturate(200%) blur(30px)",
           boxShadow: ({ boxShadows: { xxl } }) => xxl,
