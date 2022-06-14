@@ -97,6 +97,7 @@ function Presentation() {
   const [{ accept, deny }, setCheckboxStates] = useState({ accept: false, deny: false });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [comfirmationDialogOpen, setcomfirmationDialogOpen] = useState(false);
+  const [proposalDialogOpen, setProposalDialogOpen] = useState(false);
   const [snickerOpen, setSnickerOpen] = useState(false);
   const [signature, setSignature] = useState();
   const [language, setLanguage] = useState("en-US");
@@ -128,7 +129,16 @@ function Presentation() {
     setSnickerOpen(true);
     setDialogOpen(false);
   }, [setSnickerOpen]);
-
+  const seeVerbageClicked = useCallback(
+    (e) => {
+      e.preventDefault();
+      setProposalDialogOpen(true);
+    },
+    [setProposalDialogOpen]
+  );
+  const handleProposalDialogOk = useCallback(() => {
+    setProposalDialogOpen(false);
+  }, [setProposalDialogOpen]);
   const handleSnickerClose = useCallback(() => {
     setSnickerOpen(false);
   }, [setSnickerOpen]);
@@ -221,29 +231,20 @@ function Presentation() {
         }}
       >
         <Container>
-          <Grid container item xs={12} lg={12} justifyContent="center" mx="auto">
+          <Grid container item xs={12} lg={12} justifyContent="center" mx="auto" mb={3}>
             <MKTypography
               variant="h1"
               color="black"
               mt={-6}
               mb={1}
-              px={{ xs: 12, sm: 12, md: 6, lg: 12 }}
+              px={{ xs: 12, sm: 12, md: 12, lg: 12 }}
               sx={({ breakpoints, typography: { size } }) => ({
                 [breakpoints.down("md")]: {
-                  fontSize: size["2xl"],
+                  fontSize: size["3xl"],
                 },
               })}
             >
               {dict.header}
-            </MKTypography>
-            <MKTypography
-              variant="body2"
-              color="black"
-              textAlign="center"
-              px={{ xs: 12, md: 12, lg: 12 }}
-              mt={1}
-            >
-              {dict.description}
             </MKTypography>
           </Grid>
         </Container>
@@ -280,6 +281,24 @@ function Presentation() {
               </Select>
             </FormControl>
           </Grid>
+          <Divider />
+          <MKTypography
+            variant="body4"
+            mt={-6}
+            mb={6}
+            textAlign="center"
+            sx={({ breakpoints, typography: { size } }) => ({
+              [breakpoints.down("md")]: {
+                fontSize: size["5xl"],
+              },
+            })}
+          >
+            {dict.description}
+            <a href="/" onClick={seeVerbageClicked}>
+              {dict.linkVerbage}{" "}
+            </a>
+          </MKTypography>
+          <Divider />
           <Divider />
           <MKTypography
             variant="h3"
@@ -423,6 +442,19 @@ function Presentation() {
         <DialogActions>
           <Button onClick={handlecomfirmationDialogOk} autoFocus>
             OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={proposalDialogOpen}>
+        <DialogTitle id="alert-dialog-title">{dict.proposalDialogTitle}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {dict.proposalDialogVerbage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleProposalDialogOk} autoFocus>
+            {generalDict.close}
           </Button>
         </DialogActions>
       </Dialog>

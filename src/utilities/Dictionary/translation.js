@@ -4,17 +4,20 @@ export const dictionary = {
       next: "Next",
       cancel: "Cancel",
       accept: "Accept",
+      close: "Close",
     },
     presentation: {
-      header: "Plantation Home Owner Association Ammendment Signoff",
+      header:
+        "Plantation Homeowners Association, Inc. Electronic Ballot for Section 9.3 Amendment to the PHOA Covenants",
       description:
-        "Welcome. Please read instructions below and select the adequate action to fill out the ammendment form to be signed.",
+        "Welcome. Please note that you will ONLY be voting on the Section 9.3 Amendment to the PHOA Covenants, extending the Covenants (PHOA governing documents) for an additional 20 years.",
+      linkVerbage: "Click here to view the proposed amendment in its entirety.",
       formDescription:
-        "Please select from an option below. This will create a document with your options selected for you to sign.",
+        "Please select from an option below. After selecting from the options below, a digital form will be generated for you to sign, confirming your choice.",
       acceptVerbage:
-        "I support the amendment that enables ONLY the continuation of the Pharr Home Owner Association for the next 20 years. I will vote for other amendments at another time.",
+        "I vote YES for the Proposed Section 9.3 Amendment to the PHOA Covenants. I will vote for the other amendments at another time.",
       denyVerbage:
-        "I do NOT support the amendment that enables ONLY the continuation of the Pharr Home Owner Association for the next 20 years.",
+        "I vote NO for the Proposed Section 9.3 Amendment to the PHOA Covenants. I will vote for the other amendments at another time.",
       clearSignature: "Clear Signature",
       name: "Name",
       address: "Address",
@@ -23,6 +26,9 @@ export const dictionary = {
       comfirmationDialog: "Thank you! Your information has been send to administration.",
       comrirmationDialogDeny: "Thank you! No further action is needed.",
       comfirmationDialogTitle: "Form Submitted",
+      proposalDialogTitle: "Proposed Section 9.3 Amendment:",
+      proposalDialogVerbage:
+        "The Covenants and restrictions of this Declaration shall run with and bind the land for an additional term of twenty (20) years from the date this amendment to the Declaration is recorded. The Declaration may be amended by a vote of 60% of the total property owners. Any amendment must be recorded in the Deed Records of Hidalgo County, Texas before such amendment shall have any force and effect.",
     },
     pdfExport: {
       title: "Pharr Plantation Home Owner Association Ammendments 2022",
@@ -42,17 +48,20 @@ export const dictionary = {
       next: "Sigiente",
       cancel: "Cancelar",
       accept: "Acceptar",
+      close: "Cerrar",
     },
     presentation: {
-      header: "Firma de enmienda de la Asociación de Propietarios de Plantaciones",
+      header:
+        "Plantation Homeowners Association, Inc. Boleta electrónica para la enmienda de la Sección 9.3 a los Convenios de la PHOA",
       description:
-        "Bienvenidos. Lea las instrucciones a continuación y seleccione la acción adecuada para completar el formulario de enmienda que se firmará.",
+        "Bienvenidos. Tenga en cuenta que SÓLO votará sobre la Enmienda de la Sección 9.3 a los Convenios de PHOA, extendiendo los Convenios (documentos rectores de PHOA) por 20 años adicionales.",
       formDescription:
-        "Seleccione una de las opciones a continuación. Se enviará un documento a administración con la selección.",
+        "Seleccione una de las opciones a continuación. Después de seleccionar entre las opciones a continuación, se generará un formulario digital para que lo firme, confirmando su elección.",
+      linkVerbage: "Haga clic aquí para ver la enmienda propuesta en su totalidad.",
       acceptVerbage:
-        "Apoyo la enmienda que permite SOLAMENTE la continuación de la Asociación de Propietarios de Viviendas de Pharr durante los próximos 20 años. Votaré a favor de otras enmiendas en otro momento.",
+        "Voto SÍ por la Enmienda Propuesta de la Sección 9.3 a los Convenios de la PHOA. Votaré a favor de las demás enmiendas en otro momento.",
       denyVerbage:
-        "NO apoyo la enmienda que permite SOLAMENTE la continuación de la Asociación de Propietarios de Viviendas de Pharr durante los próximos 20 años.",
+        "Voto NO por la Enmienda Propuesta de la Sección 9.3 a los Convenios de la PHOA. Votaré a favor de las demás enmiendas en otro momento.",
       clearSignature: "Borrar Firma",
       name: "Nombre",
       address: "Direcion",
@@ -61,6 +70,9 @@ export const dictionary = {
       comfirmationDialog: "Gracias! Su imformacion a sido mandada a la amdinistracion.",
       comrirmationDialogDeny: "¡Gracias! No se necesita ninguna otra acción.",
       comfirmationDialogTitle: "Forma Documentada",
+      proposalDialogTitle: "Enmienda propuesta a la Sección 9.3:Proposed Section 9.3 Amendment:",
+      proposalDialogVerbage:
+        "Los Convenios y restricciones de esta Declaración regirán y obligarán a la tierra por un término adicional de veinte (20) años a partir de la fecha en que se registre esta enmienda a la Declaración. La Declaración podrá ser enmendada por el voto del 60% del total de propietarios. Cualquier enmienda debe ser registrada en los Registros de Escrituras del Condado de Hidalgo, Texas antes de que dicha enmienda tenga vigencia y efecto.",
     },
     pdfExport: {
       title: "Pharr Plantation Home Owner Association Enmiendas 2022",
