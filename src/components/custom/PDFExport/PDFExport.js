@@ -89,7 +89,7 @@ export default function PDFExport({ signature, userName, address, agree, languag
           {agree && <div>[ ]</div>} {dict.noVote}
         </Text>
         <Text style={styles.infoSection} Property>
-          Owner:{userName}
+          Owner: {userName}
         </Text>
         <Text style={styles.infoSection}>Owner Address: {address}</Text>
         <Text style={styles.infoSection}>Property Address: {address}</Text>

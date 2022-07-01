@@ -62,6 +62,7 @@ import { useState, useCallback, createRef } from "react";
 import PDFExport from "components/custom/PDFExport/PDFExport";
 import { /* PDFViewer, */ pdf } from "@react-pdf/renderer";
 import debounce from "lodash/debounce";
+import { startCase } from "lodash";
 import { dictionary } from "../../utilities/Dictionary/translation";
 // eslint-disable-next-line
 const MAILGUN_KEY = "YXBpOjA2Mzc3NDgwYTQzMjk0Njc1OTJhMDI1ZDFjNDVmMDIxLTI3YTU2MmY5LTQ3ODllYTU4";
@@ -164,17 +165,28 @@ function Presentation() {
     );
     const blob = pdf(MyDoc).toBlob();
     blob.then((blobValue) => {
-      const file = new File([blobValue], "singedCovenant.pdf", {
-        lastModified: new Date().getTime(),
+      const now = new Date();
+      const parsedDate = new Date()
+        .toISOString()
+        .split(":")
+        .join(".")
+        .split("T")
+        .join("-")
+        .replace("Z", "");
+      const fileName = `${startCase(model.name).split(" ").join()}-${
+        model.address.split(",")[0]
+      }-${parsedDate}.pdf`;
+      const file = new File([blobValue], fileName, {
+        lastModified: now.getTime(),
       });
       const email = {
         attachment: file,
       };
-      email.toEmail = "eddyhernandez0921@live.com";
+      email.toEmail = "phoapharr@gmail.com";
       email.fromEmail = "eddyhernandez0921@live.com";
       email.fromName = "PHOA AutoSystem@phoa.com";
-      email.subject = "test Email";
-      email.message = "sdfsdfasdf";
+      email.subject = `PHOA-Signature ${fileName}`;
+      email.message = `Form has been signed by ${model.name} for address ${model.address} on ${parsedDate}. Please process`;
       sendEmail(email);
       setcomfirmationDialogOpen(true);
     });
@@ -188,9 +200,14 @@ function Presentation() {
   }, [setcomfirmationDialogOpen]);
   const onInputChange = useCallback(
     (e, newValue) => {
+      if (e.target.parentElement.id) {
+        document.activeElement.blur();
+      }
       setModel((existing) => ({
         ...existing,
-        [e.target.id === "name" ? "name" : "address"]: newValue ? newValue.value : e.target.value,
+        [e.target.id === "name" ? "name" : "address"]: newValue
+          ? startCase(newValue.value)
+          : startCase(e.target.value),
       }));
     },
     [setModel]
@@ -208,7 +225,7 @@ function Presentation() {
             setAddresses(data.results.map((x) => ({ ...x, value: x.formatted })));
           });
       }
-    }, 1000),
+    }, 300),
     [setAddresses]
   );
   const dict = dictionary[language].presentation;
@@ -359,6 +376,7 @@ function Presentation() {
           </MKTypography>
           <FormControl sx={{ m: 1, margin: 2 }} variant="outlined">
             <OutlinedInput
+              autoFocus
               id="name"
               type="text"
               value={model.name}
@@ -405,7 +423,13 @@ function Presentation() {
           <Divider />
           <SignatureCanvas
             penColor="black"
-            canvasProps={{ width: 500, height: 200, className: "sigCanvas" }}
+            canvasProps={{
+              width: 500,
+              height: 200,
+              className: "sigCanvas",
+              id: "sigCanvas",
+            }}
+            backgroundColor="RGB(167, 184, 250)"
             ref={signatureRef}
             onEnd={onSignatureEnd}
           />
