@@ -115,11 +115,11 @@ function Presentation() {
   }, [accept, deny]);
 
   const submitClicked = useCallback(() => {
-    if (accept) {
-      setDialogOpen(true);
-    } else {
-      setcomfirmationDialogOpen(true);
-    }
+    // if (accept) {
+    setDialogOpen(true);
+    // } else {
+    // setcomfirmationDialogOpen(true);
+    // }
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [accept, deny, setcomfirmationDialogOpen, setDialogOpen]);
